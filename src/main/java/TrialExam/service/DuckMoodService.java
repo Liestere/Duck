@@ -5,6 +5,9 @@ import TrialExam.model.Feeling;
 import TrialExam.model.Food;
 import TrialExam.repository.DuckRepository;
 import TrialExam.repository.FoodRepository;
+import TrialExam.specification.DuckSpecificationBuilder;
+import TrialExam.specification.SearchCriteria;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 
@@ -12,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class DuckMoodService {
@@ -31,12 +36,23 @@ public class DuckMoodService {
         this.foodRepository = foodRepository;
     }
 
-    public List<Duck> getDucks(Feeling feeling) {
+    public List<Duck> getDucks(String search) {
 //        List<Duck> goodFeelingDucks = ducks.stream()
 //                .filter(d -> d.getFeeling().equals(feeling))
 //                .collect(Collectors.toList());
 //        return goodFeelingDucks;
-        return duckRepository.findAll();
+
+ //       return duckRepository.findAll();
+
+        DuckSpecificationBuilder builder = new DuckSpecificationBuilder();
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),", Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher matcher = pattern.matcher(search + ",");
+        while (matcher.find()) {
+            builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+        }
+
+        Specification<Duck> spec = builder.build();
+        return duckRepository.findAll(spec);
     }
 
     public Duck getDuck(Long id) {

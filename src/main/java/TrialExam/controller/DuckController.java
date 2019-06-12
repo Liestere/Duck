@@ -2,7 +2,6 @@ package TrialExam.controller;
 
 import TrialExam.model.Duck;
 import TrialExam.model.Feeling;
-import TrialExam.repository.DuckRepository;
 import TrialExam.service.DuckMoodService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,13 @@ public class DuckController {
         this.service = service;
     }
 
+//    @RequestMapping(value="", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public List<Duck> getAllDucks(@RequestParam(value = "feeling", required = false) Feeling feeling){
+//        return service.getDucks(feeling);
+//    }
+
     @RequestMapping(value="", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Duck> getAllDucks(@RequestParam(value = "feeling", required = false) Feeling feeling){
+    public List<Duck> getAllDucks(@RequestParam(value = "search") Feeling feeling){
         return service.getDucks(feeling);
     }
 
